@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tours")
+@RequestMapping("/api/v1/auth/admin/tours")
 public class TourController {
 
     private final TourService tourService;
 
-
+    @Autowired
     public TourController(TourService tourService) {
         this.tourService = tourService;
     }
@@ -30,23 +30,23 @@ public class TourController {
     }
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<Tour> getTourById(Long id){
+    public ResponseEntity<Tour> getTourById(@PathVariable Long id){
         Tour tour = tourService.getTourById(id);
         return new ResponseEntity<>(tour, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Tour> addTour(Tour tour){
+    public ResponseEntity<Tour> addTour(@RequestBody Tour tour){
         Tour newTour = tourService.addTour(tour);
         return new ResponseEntity<>(tour, HttpStatus.CREATED);
     }
     @PutMapping("/update")
-    public ResponseEntity<Tour> updateTour(Tour tour){
+    public ResponseEntity<Tour> updateTour(@RequestBody Tour tour){
         Tour newTour = tourService.updateTour(tour);
         return new ResponseEntity<>(tour, HttpStatus.OK);
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Tour> deleteTourById(Long id){
+    public ResponseEntity<Tour> deleteTourById(@PathVariable Long id){
         tourService.deleteTourById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -41,7 +41,7 @@ public class SecurityConfig{
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.GET, "/api/v1/auth/admin/**").hasAuthority(ADMIN.name())
-                .requestMatchers("/api/v1/auth/user/**").hasAuthority(USER.name())
+                .requestMatchers("/api/v1/auth/user/**").hasAnyAuthority(USER.name(), ADMIN.name())
                 .requestMatchers(HttpMethod.POST, "api/v1/auth/projects").hasAnyAuthority( "Admin")
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/register","/api/v1/auth/authenticate" ).permitAll()
                 .anyRequest().authenticated()

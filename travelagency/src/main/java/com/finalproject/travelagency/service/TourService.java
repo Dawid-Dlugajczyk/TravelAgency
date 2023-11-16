@@ -4,6 +4,7 @@ package com.finalproject.travelagency.service;
 import com.finalproject.travelagency.exception.TourNotFoundException;
 import com.finalproject.travelagency.model.Tour;
 import com.finalproject.travelagency.repository.TourRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 public class TourService {
 
     private final TourRepository tourRepository;
-
+    @Autowired
     public TourService(TourRepository tourRepository) {
         this.tourRepository = tourRepository;
     }
@@ -29,7 +30,6 @@ public class TourService {
     public Tour addTour(Tour tour){
         return tourRepository.save(tour);
     }
-
 
     public Tour updateTour(Tour tour){
         return tourRepository.save(tour);

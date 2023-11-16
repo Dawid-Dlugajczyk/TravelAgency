@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/v1/auth/admin/users")
 public class UserController {
     private final UserService userService;
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }

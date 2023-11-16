@@ -20,7 +20,7 @@ import java.util.List;
 public class User implements Serializable, UserDetails {
 
     @Id
-    @Column(nullable=false, updatable = false)
+    @Column(name = "user_id", nullable=false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
