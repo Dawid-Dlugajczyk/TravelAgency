@@ -21,4 +21,10 @@ public class Tour implements Serializable {
 
     @Column(name = "trip_name")
     String name;
+
+    @Column(name="country")
+    String country;
+
+    @Column(name="city")
+    String city;
 }

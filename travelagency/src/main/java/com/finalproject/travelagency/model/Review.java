@@ -24,7 +24,7 @@ public class Review {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tour_id")
     private Tour tour;
 

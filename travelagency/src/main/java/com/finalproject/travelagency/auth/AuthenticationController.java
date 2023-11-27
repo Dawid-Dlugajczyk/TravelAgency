@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.ErrorManager;
 
 @RestController
 @RequestMapping("/api/v1/auth")

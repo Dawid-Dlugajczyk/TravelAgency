@@ -21,7 +21,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Review>> getAllReviews(){
         List<Review> reviews = reviewService.getAllReviews();
         return new ResponseEntity<>(reviews, HttpStatus.OK);

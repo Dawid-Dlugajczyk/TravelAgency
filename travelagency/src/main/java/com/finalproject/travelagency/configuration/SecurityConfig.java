@@ -1,10 +1,12 @@
 package com.finalproject.travelagency.configuration;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,8 +15,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
+import java.util.Arrays;
 
 import static com.finalproject.travelagency.model.Role.ADMIN;
 import static com.finalproject.travelagency.model.Role.USER;
@@ -36,21 +42,38 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 
+
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Add your frontend URL
+        config.setAllowedMethods(Arrays.asList("*")); // Allow all methods (GET, POST, etc.)
+        config.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        // Apply CORS configuration to HttpSecurity
         http
+                .cors().configurationSource(request -> config)
+                .and()
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/api/v1/auth/admin/**").hasAuthority(ADMIN.name())
-                .requestMatchers("/api/v1/auth/user/**").hasAnyAuthority(USER.name(), ADMIN.name())
+                .requestMatchers( HttpMethod.POST, "/api/v1/auth/tours").hasAuthority(ADMIN.name())
+                .requestMatchers("/api/v1/auth/users").hasAuthority(ADMIN.name())
+                .requestMatchers("/api/v1/auth/user").hasAnyAuthority(USER.name(), ADMIN.name())
                 .requestMatchers(HttpMethod.POST, "api/v1/auth/projects").hasAnyAuthority( "Admin")
-                .requestMatchers(HttpMethod.POST, "/api/v1/auth/register","/api/v1/auth/authenticate" ).permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users").permitAll()
+                .requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate").permitAll()
+                //.requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users" ).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .cors();;
 
 
         /*http
@@ -72,4 +95,5 @@ public class SecurityConfig{
 
         return http.build();
     }
+
 }

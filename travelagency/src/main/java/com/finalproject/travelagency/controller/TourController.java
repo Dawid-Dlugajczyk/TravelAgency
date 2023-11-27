@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/auth/admin/tours")
+@RequestMapping("/api/v1/auth/tours")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TourController {
 
     private final TourService tourService;
@@ -23,7 +24,7 @@ public class TourController {
         this.tourService = tourService;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Tour>> getAllTours(){
         List<Tour> tours = tourService.getAllTours();
         return new ResponseEntity<>(tours, HttpStatus.OK);
@@ -37,7 +38,7 @@ public class TourController {
 
     @PostMapping("/add")
     public ResponseEntity<Tour> addTour(@RequestBody Tour tour){
-        Tour newTour = tourService.addTour(tour);
+        tourService.addTour(tour);
         return new ResponseEntity<>(tour, HttpStatus.CREATED);
     }
     @PutMapping("/update")

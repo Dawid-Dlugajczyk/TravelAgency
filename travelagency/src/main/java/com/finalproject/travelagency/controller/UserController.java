@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/auth/admin/users")
+@RequestMapping("/api/v1/auth/users")
 public class UserController {
     private final UserService userService;
     @Autowired
@@ -20,7 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<User>> getAllUsers(){
         List<User> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
