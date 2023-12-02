@@ -1,5 +1,6 @@
 package com.finalproject.travelagency.controller;
 
+import com.finalproject.travelagency.model.Role;
 import com.finalproject.travelagency.model.User;
 import com.finalproject.travelagency.service.UserService;
 import org.slf4j.Logger;
@@ -49,4 +50,5 @@ public class UserController {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

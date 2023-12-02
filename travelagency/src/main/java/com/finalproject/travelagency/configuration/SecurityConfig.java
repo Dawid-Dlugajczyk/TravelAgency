@@ -63,7 +63,7 @@ public class SecurityConfig{
                 .requestMatchers("/api/v1/auth/users").hasAuthority(ADMIN.name())
                 .requestMatchers("/api/v1/auth/user").hasAnyAuthority(USER.name(), ADMIN.name())
                 .requestMatchers(HttpMethod.POST, "api/v1/auth/projects").hasAnyAuthority( "Admin")
-                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users").hasAnyAuthority(USER.name(), ADMIN.name())
                 .requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate").permitAll()
                 //.requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users" ).permitAll()
                 .anyRequest().authenticated()
