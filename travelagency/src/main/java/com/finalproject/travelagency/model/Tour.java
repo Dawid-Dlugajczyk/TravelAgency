@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @Builder
@@ -22,9 +24,40 @@ public class Tour implements Serializable {
     @Column(name = "trip_name")
     String name;
 
+    @Column
+    Double price;
+
     @Column(name="country")
     String country;
 
     @Column(name="city")
     String city;
+
+    @Column
+    Integer numberOfDays;
+
+    @Column
+    LocalDate departureDate;
+
+    @Column
+    LocalDate arrivalDate;
+
+    @Column(name = "meal")
+    @Enumerated(EnumType.STRING)
+    MealType meal;
+
+    @Column
+    String hotelName;
+
+    @Column
+    String description;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    TourType type;
+
+    @Column(length = 20971520)
+    @Lob
+    byte[] image;
+
 }

@@ -21,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.finalproject.travelagency.model.Role.ADMIN;
 import static com.finalproject.travelagency.model.Role.USER;
@@ -44,9 +45,9 @@ public class SecurityConfig{
 
 
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Add your frontend URL
-        config.setAllowedMethods(Arrays.asList("*")); // Allow all methods (GET, POST, etc.)
-        config.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
+        config.setAllowedOrigins(List.of("http://localhost:4200")); // Add your frontend URL
+        config.setAllowedMethods(List.of("*")); // Allow all methods (GET, POST, etc.)
+        config.setAllowedHeaders(List.of("*")); // Allow all headers
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -59,11 +60,10 @@ public class SecurityConfig{
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers( HttpMethod.POST, "/api/v1/auth/tours").hasAuthority(ADMIN.name())
                 .requestMatchers("/api/v1/auth/users").hasAuthority(ADMIN.name())
+                .requestMatchers(HttpMethod.POST,  "/api/v1/auth/tours/add", "/api/v1/auth/tours/update").hasAuthority(ADMIN.name())
                 .requestMatchers("/api/v1/auth/user").hasAnyAuthority(USER.name(), ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "api/v1/auth/projects").hasAnyAuthority( "Admin")
-                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users").hasAnyAuthority(USER.name(), ADMIN.name())
+                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours/**","/api/v1/auth/users").permitAll()
                 .requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate").permitAll()
                 //.requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users" ).permitAll()
                 .anyRequest().authenticated()
@@ -73,7 +73,7 @@ public class SecurityConfig{
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors();;
+                .cors();
 
 
         /*http
