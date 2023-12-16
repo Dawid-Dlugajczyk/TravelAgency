@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -32,4 +33,7 @@ public class Reservation {
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
+
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private List<Person> persons; // Add a list of persons for each reservation
 }

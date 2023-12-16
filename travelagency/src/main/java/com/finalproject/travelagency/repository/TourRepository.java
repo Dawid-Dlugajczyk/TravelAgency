@@ -27,8 +27,10 @@ public interface TourRepository extends JpaRepository<Tour, Long> {
             "AND (:arrivalDate IS NULL OR t.arrivalDate >= :arrivalDate) " +
             "AND (:types IS NULL OR t.type IN :types) " +
             "AND ((:name IS NULL OR t.name = :name) OR (:name = '' )) " +
-            "AND (:minPrice IS NULL OR t.price >= :minPrice) " +
-            "AND (:maxPrice IS NULL OR t.price <= :maxPrice)")
+            "AND (:minPrice IS NULL OR t.price >= :minPrice)" +
+            "AND (:maxPrice IS NULL OR t.price <= :maxPrice)"+
+            "AND (:minNumOfDays IS NULL OR t.numberOfDays >= :minNumOfDays)" +
+            "AND (:maxNumOfDays IS NULL OR t.numberOfDays <= :maxNumOfDays)")
     List<Tour> findByFilters(
             @Param("countries") List<String> countries,
             @Param("cities") List<String> cities,
@@ -39,6 +41,8 @@ public interface TourRepository extends JpaRepository<Tour, Long> {
             @Param("types") List<TourType> types,
             @Param("name") String name,
             @Param("minPrice") Double minPrice,
-            @Param("maxPrice") Double maxPrice);
+            @Param("maxPrice") Double maxPrice,
+            @Param("minNumOfDays") Integer minNumOfDays,
+            @Param("maxNumOfDays") Integer maxNumOfDays);
 }
 

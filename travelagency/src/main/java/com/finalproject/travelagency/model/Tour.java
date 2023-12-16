@@ -60,4 +60,7 @@ public class Tour implements Serializable {
     @Lob
     byte[] image;
 
+    @Column
+    Integer availablePlaces;
+
 }

@@ -1,5 +1,6 @@
 package com.finalproject.travelagency.controller;
 
+import com.finalproject.travelagency.model.Person;
 import com.finalproject.travelagency.model.Reservation;
 import com.finalproject.travelagency.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,28 +33,30 @@ public class ReservationController {
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable("id") Long id) {
-        Reservation reservation = reservationService.findReservationById(id);
-        return new ResponseEntity<>(reservation, HttpStatus.OK);
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<Reservation> addReservation(@RequestBody Reservation reservation) {
-        Reservation newReservation = reservationService.addReservation(reservation);
+    @PostMapping("/create")
+    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
+        Reservation newReservation = reservationService.createReservation(reservation);
         return new ResponseEntity<>(newReservation, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Reservation> updateReservation(@RequestBody Reservation reservation) {
-        Reservation updatedReservation = reservationService.updateReservation(reservation);
-        return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
+    @GetMapping("/{reservationId}")
+    public ResponseEntity<Reservation> getReservationById(@PathVariable Long reservationId) {
+        Reservation reservation = reservationService.getReservationById(reservationId);
+        return new ResponseEntity<>(reservation, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservationService.deleteReservation(id);
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<Void> deleteReservationById(@PathVariable Long reservationId) {
+        reservationService.deleteReservationById(reservationId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/{reservationId}/addPersons")
+    public ResponseEntity<Reservation> addPersonsToReservation(
+            @PathVariable Long reservationId,
+            @RequestBody List<Person> persons) {
+        Reservation updatedReservation = reservationService.addPersonsToReservation(reservationId, persons);
+        return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
     }
 }
 

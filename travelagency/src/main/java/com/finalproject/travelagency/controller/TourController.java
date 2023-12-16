@@ -96,15 +96,17 @@ public class TourController {
                                                   @RequestParam(required = false) List<TourType> types,
                                                   @RequestParam(required = false) String name,
                                                   @RequestParam(required = false) Double minPrice,
-                                                  @RequestParam(required = false) Double maxPrice) {
+                                                  @RequestParam(required = false) Double maxPrice,
+                                                  @RequestParam(required = false) Integer minNumberOfDays,
+                                                  @RequestParam(required = false) Integer maxNumOfDays) {
         List<Tour> filteredTours = tourService.filterTours(
-                countries, cities, departureDate, meals, hotelName, arrivalDate, types, name, minPrice, maxPrice);
+                countries, cities, departureDate, meals, hotelName, arrivalDate, types, name, minPrice, maxPrice, minNumberOfDays, maxNumOfDays);
         return new ResponseEntity<>(filteredTours, HttpStatus.OK);
     }
 
     @GetMapping("/enums/types")
-    public ResponseEntity<List<String>> getMealTypes() {
-        List<String> meals = tourService.getTourTypes();
+    public ResponseEntity<List<TourType>> getMealTypes() {
+        List<TourType> meals = tourService.getTourTypes();
         return ResponseEntity.ok(meals);
     }
 
@@ -125,5 +127,6 @@ public class TourController {
         List<String> cities = tourService.getAllCities();
         return ResponseEntity.ok(cities);
     }
+
 
 }

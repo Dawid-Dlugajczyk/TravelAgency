@@ -69,7 +69,7 @@ public class TourService {
                 foundTour.setMeal(tour.getMeal());
                 foundTour.setName(tour.getName());
                 foundTour.setPrice(tour.getPrice());
-                foundTour.setType(convertEnum(tour.getType()));
+                foundTour.setType(tour.getType());
 
                 return tourRepository.save(foundTour);
 
@@ -88,9 +88,9 @@ public class TourService {
 
     public List<Tour> filterTours(List<String> countries, List<String> cities, LocalDate departureDate,
                                   List<MealType> meals, String hotelName, LocalDate arrivalDate,
-                                  List<TourType> types, String name, Double minPrice, Double maxPrice) {
+                                  List<TourType> types, String name, Double minPrice, Double maxPrice,Integer minNumberOfDays, Integer maxNumOfDays) {
         return tourRepository.findByFilters(countries, cities, departureDate, meals, hotelName, arrivalDate,
-                types, name, minPrice, maxPrice);
+                types, name, minPrice, maxPrice, minNumberOfDays, maxNumOfDays);
     }
 
     public List<String> getMealTypes() {
@@ -99,12 +99,15 @@ public class TourService {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getTourTypes() {
+/*    public List<String> getTourTypes() {
         return Arrays.stream(TourType.values())
                 .map(Enum::name) // Convert enum to string
                 .collect(Collectors.toList());
-    }
+    }*/
 
+    public List<TourType> getTourTypes() {
+        return Arrays.asList(TourType.values());
+    }
     public List<String> getAllCountries() {
         return tourRepository.findAll().stream()
                 .map(Tour::getCountry)

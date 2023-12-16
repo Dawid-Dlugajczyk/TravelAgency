@@ -62,7 +62,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/users").hasAuthority(ADMIN.name())
                 .requestMatchers(HttpMethod.POST,  "/api/v1/auth/tours/add", "/api/v1/auth/tours/update").hasAuthority(ADMIN.name())
-                .requestMatchers("/api/v1/auth/user").hasAnyAuthority(USER.name(), ADMIN.name())
+                .requestMatchers(HttpMethod.GET, "/api/v1/auth/user","/api/v1/auth/user/find" ).hasAnyAuthority(USER.name(), ADMIN.name())
                 .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours/**","/api/v1/auth/users").permitAll()
                 .requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate").permitAll()
                 //.requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users" ).permitAll()
