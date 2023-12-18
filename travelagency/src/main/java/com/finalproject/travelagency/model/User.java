@@ -1,5 +1,7 @@
 package com.finalproject.travelagency.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.finalproject.travelagency.serialization.RoleDeserializer;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,12 +9,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-@Data
 @Builder
 @Getter
 @Setter
@@ -33,6 +31,9 @@ public class User implements Serializable, UserDetails {
     @Column(name="lastname")
     private String lastname;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
+
     @Column(name="phone_number")
     private String phoneNumber;
 
@@ -50,6 +51,7 @@ public class User implements Serializable, UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name="role")
+    @JsonDeserialize(using = RoleDeserializer.class)
     private Role role;
 
     @Column(name = "password")
@@ -57,7 +59,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
@@ -89,5 +91,6 @@ public class User implements Serializable, UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
 
