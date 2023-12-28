@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Table(name = "persons")
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "person_id")
     private Long id;
 
@@ -24,7 +24,7 @@ public class Person {
     @Column
     String secondName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 

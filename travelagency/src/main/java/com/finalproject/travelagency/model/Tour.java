@@ -1,11 +1,13 @@
 package com.finalproject.travelagency.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -59,6 +61,10 @@ public class Tour implements Serializable {
     @Column(length = 20971520)
     @Lob
     byte[] image;
+
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Comment> comments;
 
     @Column
     Integer availablePlaces;

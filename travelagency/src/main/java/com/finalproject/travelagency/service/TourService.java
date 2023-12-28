@@ -2,10 +2,10 @@ package com.finalproject.travelagency.service;
 
 
 import com.finalproject.travelagency.exception.TourNotFoundException;
-import com.finalproject.travelagency.model.MealType;
-import com.finalproject.travelagency.model.Tour;
-import com.finalproject.travelagency.model.TourType;
+import com.finalproject.travelagency.model.*;
+import com.finalproject.travelagency.repository.CommentRepository;
 import com.finalproject.travelagency.repository.TourRepository;
+import com.finalproject.travelagency.repository.UserRepository;
 import jakarta.websocket.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,19 +15,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class TourService {
 
     private final TourRepository tourRepository;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
     @Autowired
-    public TourService(TourRepository tourRepository) {
+    public TourService(TourRepository tourRepository, UserRepository userRepository, CommentRepository commentRepository) {
         this.tourRepository = tourRepository;
+        this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<Tour> getAllTours(){
@@ -52,6 +53,24 @@ public class TourService {
         }
     }
 
+    public void addCommentToTour(Long tourId, Long userId, String commentText) throws Exception {
+        Tour tour = tourRepository.findById(tourId).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (tour != null && user != null) {
+            Comment comment = new Comment();
+            comment.setTour(tour);
+            comment.setUser(user);
+            comment.setText(commentText);
+            comment.setCommentedAt(LocalDate.now());
+
+            tour.getComments().add(comment);
+
+            tourRepository.save(tour);
+        } else {
+            throw new Exception("Tour or User not found");
+        }
+    }
     public Tour updateTour(Tour tour, MultipartFile imageFile, Long id) throws IOException {
         try {
             Optional<Tour> existingTour = tourRepository.findById(id);
@@ -86,6 +105,18 @@ public class TourService {
         tourRepository.deleteById(id);
     }
 
+    public List<Comment> getCommentsForTour(Long tourId) {
+        Tour tour = tourRepository.findById(tourId).orElse(null);
+        if (tour != null) {
+            return tour.getComments();
+        }
+        return Collections.emptyList();
+    }
+
+    public void deleteComment(Long commentId) {
+        commentRepository.deleteById(commentId);
+    }
+
     public List<Tour> filterTours(List<String> countries, List<String> cities, LocalDate departureDate,
                                   List<MealType> meals, String hotelName, LocalDate arrivalDate,
                                   List<TourType> types, String name, Double minPrice, Double maxPrice,Integer minNumberOfDays, Integer maxNumOfDays) {
@@ -99,11 +130,6 @@ public class TourService {
                 .collect(Collectors.toList());
     }
 
-/*    public List<String> getTourTypes() {
-        return Arrays.stream(TourType.values())
-                .map(Enum::name) // Convert enum to string
-                .collect(Collectors.toList());
-    }*/
 
     public List<TourType> getTourTypes() {
         return Arrays.asList(TourType.values());
@@ -122,23 +148,5 @@ public class TourService {
                 .collect(Collectors.toList());
     }
 
-    public TourType convertEnum(TourType tourType){
-        TourType convertedType = TourType.ADVENTURE;
-        String type = tourType.toString();
-        switch (type){
-            case "HIKING":
-                convertedType = TourType.HIKING;
-            case "ADVENTURE":
-                convertedType = TourType.ADVENTURE;
-            case "CULTURAL":
-                convertedType = TourType.CULTURAL;
-            case "BEACH":
-                convertedType = TourType.BEACH;
-            case "RELAXATION":
-                convertedType =  TourType.RELAXATION;
-
-        }
-        return convertedType;
-    }
 
 }

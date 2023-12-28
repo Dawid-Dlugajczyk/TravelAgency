@@ -1,16 +1,13 @@
 package com.finalproject.travelagency.model;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.finalproject.travelagency.serialization.RoleDeserializer;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.io.Serializable;
 import java.util.*;
 
+@Data
 @Builder
 @Getter
 @Setter
@@ -21,7 +18,7 @@ import java.util.*;
 public class User implements Serializable, UserDetails {
 
     @Id
-    @Column(name = "user_id", nullable=false, updatable = false)
+    @Column(name = "id", nullable=false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -31,17 +28,17 @@ public class User implements Serializable, UserDetails {
     @Column(name="lastname")
     private String lastname;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Reservation> reservations;
-
     @Column(name="phone_number")
     private String phoneNumber;
 
     @Column(name="city")
     private String city;
 
-    @Column(name="addres")
+    @Column(name="address")
     private String address;
+
+    @Column(name="dateOfBirth")
+    Date dateOfBirth;
 
     @Column(name="pesel")
     private String pesel;
@@ -51,7 +48,6 @@ public class User implements Serializable, UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name="role")
-    @JsonDeserialize(using = RoleDeserializer.class)
     private Role role;
 
     @Column(name = "password")
@@ -59,7 +55,7 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
@@ -93,4 +89,3 @@ public class User implements Serializable, UserDetails {
     }
 
 }
-

@@ -1,5 +1,6 @@
 package com.finalproject.travelagency.configuration;
 
+import com.finalproject.travelagency.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static com.finalproject.travelagency.model.Role.ADMIN;
-import static com.finalproject.travelagency.model.Role.USER;
 
 
 @Configuration
@@ -60,11 +58,11 @@ public class SecurityConfig{
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/users").hasAuthority(ADMIN.name())
-                .requestMatchers(HttpMethod.POST,  "/api/v1/auth/tours/add", "/api/v1/auth/tours/update").hasAuthority(ADMIN.name())
-                .requestMatchers(HttpMethod.GET, "/api/v1/auth/user","/api/v1/auth/user/find" ).hasAnyAuthority(USER.name(), ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "/api/v1/auth/reservations/create" ).hasAnyAuthority(USER.name(), ADMIN.name())
-                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours/**","/api/v1/auth/users").permitAll()
+                .requestMatchers("/api/v1/auth/users").hasAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.POST,  "/api/v1/auth/tours/add", "/api/v1/auth/tours/update", "/api/v1/auth/users/update", "/api/v1/auth/users/add").hasAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.GET, "/api/v1/auth/users","/api/v1/auth/user/find", "/api/v1/auth/reservations", "/api/v1/auth/persons/reservation" ).hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/reservations/create", "/api/v1/auth/tours/{tourId}/comments/add" ).hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours/**", "/api/v1/auth/tours/{tourId}/comments").permitAll()
                 .requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate").permitAll()
                 //.requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users" ).permitAll()
                 .anyRequest().authenticated()

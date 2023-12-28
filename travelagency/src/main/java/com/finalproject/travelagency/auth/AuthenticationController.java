@@ -1,9 +1,7 @@
 package com.finalproject.travelagency.auth;
 
-import com.finalproject.travelagency.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 

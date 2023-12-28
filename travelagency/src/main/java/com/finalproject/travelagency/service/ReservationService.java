@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ReservationService {
@@ -39,24 +40,15 @@ public class ReservationService {
                 .orElseThrow(() -> new ReservationNotFoundException("Reservation not found with id: " + id));
     }
 
+    public Reservation updateReservation(Long id, Reservation reservation){
+        Reservation newReservation = getReservationById(id);
+        newReservation.setStatus(reservation.getStatus());
+        newReservation.setPaymentStatus(reservation.getPaymentStatus());
+        return reservationRepository.save(newReservation);
+    }
     public void deleteReservationById(Long id) {
         reservationRepository.deleteById(id);
     }
 
-    public Reservation addPersonsToReservation(Long reservationId, List<Person> persons) {
-        Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new ReservationNotFoundException("Reservation not found with id: " + reservationId));
-
-        if (reservation.getPersons() == null) {
-            reservation.setPersons(new ArrayList<>());
-        }
-
-        persons.forEach(person -> {
-            person.setReservation(reservation);
-            reservation.getPersons().add(person);
-        });
-
-        return reservationRepository.save(reservation);
-    }
 
 }

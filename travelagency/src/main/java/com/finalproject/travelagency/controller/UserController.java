@@ -1,10 +1,7 @@
 package com.finalproject.travelagency.controller;
 
-import com.finalproject.travelagency.model.Role;
 import com.finalproject.travelagency.model.User;
 import com.finalproject.travelagency.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +37,9 @@ public class UserController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
-        User newUser = userService.updateUser(user);
+    @PostMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable("id") Long id){
+        User newUser = userService.updateUser(user, id);
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
 

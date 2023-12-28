@@ -1,11 +1,13 @@
 package com.finalproject.travelagency.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
 
 @Builder
 @Getter
@@ -22,8 +24,14 @@ public class Reservation {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name ="user_id", referencedColumnName = "id")
     private User user;
+
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "reservation_id")
+    @JsonIgnore
+    private List<Person> persons;
 
     @ManyToOne
     @JoinColumn(name = "tour_id")
@@ -34,6 +42,7 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private List<Person> persons; // Add a list of persons for each reservation
+    @Enumerated(EnumType.STRING)
+    private  PaymentStatus paymentStatus;
+
 }

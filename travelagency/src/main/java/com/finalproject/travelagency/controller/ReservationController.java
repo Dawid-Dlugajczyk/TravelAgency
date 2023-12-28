@@ -22,7 +22,7 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("")
     public ResponseEntity<List<Reservation>> getAllReservations() {
         List<Reservation> reservations = reservationService.getAllReservations();
         return new ResponseEntity<>(reservations, HttpStatus.OK);
@@ -40,24 +40,24 @@ public class ReservationController {
         return new ResponseEntity<>(newReservation, HttpStatus.CREATED);
     }
 
+    @PostMapping("/update/{id}")
+    public ResponseEntity<Reservation> createReservation(@PathVariable Long id, @RequestBody Reservation reservation) {
+        Reservation newReservation = reservationService.updateReservation(id, reservation);
+        return new ResponseEntity<>(newReservation, HttpStatus.CREATED);
+    }
+
     @GetMapping("/{reservationId}")
     public ResponseEntity<Reservation> getReservationById(@PathVariable Long reservationId) {
         Reservation reservation = reservationService.getReservationById(reservationId);
         return new ResponseEntity<>(reservation, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{reservationId}")
+    @DeleteMapping("/delete/{reservationId}")
     public ResponseEntity<Void> deleteReservationById(@PathVariable Long reservationId) {
         reservationService.deleteReservationById(reservationId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{reservationId}/addPersons")
-    public ResponseEntity<Reservation> addPersonsToReservation(
-            @PathVariable Long reservationId,
-            @RequestBody List<Person> persons) {
-        Reservation updatedReservation = reservationService.addPersonsToReservation(reservationId, persons);
-        return new ResponseEntity<>(updatedReservation, HttpStatus.OK);
-    }
+
 }
 
