@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.*;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class TourService {
 
+    private static final String IMAGE_DIRECTORY = "C:/Users/david/Desktop/Ostatni projekt/FInalProject/TravelAgency/images/";
     private final TourRepository tourRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -37,15 +41,13 @@ public class TourService {
 
     public Tour getTourById(Long id){
         return tourRepository.findTourById(id)
-                .orElseThrow(() -> new TourNotFoundException("User with id=" + id + "was not found."));
+                .orElseThrow(() -> new TourNotFoundException("Tour with id=" + id + "was not found."));
     }
 
     public Tour addTour(Tour tour, MultipartFile imageFile) throws IOException {
         try {
-            if (imageFile != null && !imageFile.isEmpty()) {
-                byte[] imageData = imageFile.getBytes();
-                tour.setImage(imageData);
-            }
+            String imagePath = saveImageLocally(imageFile);
+            tour.setImagePath(imagePath);
             return tourRepository.save(tour);
         } catch (IOException e) {
             // Handle IO exception
@@ -77,7 +79,8 @@ public class TourService {
             if (existingTour.isPresent()) {
                 Tour foundTour = existingTour.get();
                 if (imageFile != null && !imageFile.isEmpty()) {
-                    foundTour.setImage(imageFile.getBytes());
+                    String imagePath = saveImageLocally(imageFile);
+                    foundTour.setImagePath(imagePath);
                 }
                 foundTour.setCity(tour.getCity());
                 foundTour.setCountry(tour.getCountry());
@@ -93,7 +96,7 @@ public class TourService {
                 return tourRepository.save(foundTour);
 
             }else{
-                return tourRepository.save(tour);
+                throw new TourNotFoundException("Tour with ID " + id + " not found");
             }
 
         } catch (IOException e) {
@@ -111,10 +114,6 @@ public class TourService {
             return tour.getComments();
         }
         return Collections.emptyList();
-    }
-
-    public void deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
     }
 
     public List<Tour> filterTours(List<String> countries, List<String> cities, LocalDate departureDate,
@@ -149,4 +148,32 @@ public class TourService {
     }
 
 
+
+    private String saveImageLocally(MultipartFile imageFile) throws IOException {
+        // Generate a unique filename for the image
+        String uniqueFileName = generateUniqueFileName(imageFile.getOriginalFilename());
+
+        // Define the path where the image will be stored
+        Path imagePath = Paths.get(IMAGE_DIRECTORY + uniqueFileName);
+
+        // Save the file to the specified path
+        Files.write(imagePath, imageFile.getBytes());
+
+        // Return the path where the image is stored
+        return imagePath.toString();
+    }
+
+    // Method to generate a unique filename
+    private String generateUniqueFileName(String originalFileName) {
+        // Generate a unique filename, for example, using UUID
+        String uniqueID = UUID.randomUUID().toString();
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+        return uniqueID + fileExtension;
+    }
+
+    public List<Tour> getToursBeforeOrOnCurrentDate() {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate oneMonthLater = currentDate.plusMonths(1);
+        return tourRepository.findByDepartureDateLessThanEqual(oneMonthLater);
+    }
 }

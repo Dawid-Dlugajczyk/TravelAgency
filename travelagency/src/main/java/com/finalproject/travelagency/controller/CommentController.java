@@ -1,8 +1,11 @@
 package com.finalproject.travelagency.controller;
 
 import com.finalproject.travelagency.model.Comment;
+import com.finalproject.travelagency.model.Tour;
+import com.finalproject.travelagency.repository.CommentRepository;
 import com.finalproject.travelagency.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +19,8 @@ public class CommentController {
 
     @Autowired
     private TourService tourService;
+    @Autowired
+    private CommentRepository commentRepository;
 
 
     @PostMapping("/add")
@@ -34,8 +39,8 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
     @DeleteMapping("/delete/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable("commentId") Long commentId) {
-        tourService.deleteComment(commentId);
-        return ResponseEntity.ok("Comment deleted successfully");
+    public ResponseEntity<Comment> deleteComment(@PathVariable("commentId") Long commentId) {
+        commentRepository.deleteById(commentId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

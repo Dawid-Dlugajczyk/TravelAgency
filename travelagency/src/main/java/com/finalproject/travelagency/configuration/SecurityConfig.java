@@ -58,11 +58,13 @@ public class SecurityConfig{
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/users").hasAuthority(Role.ADMIN.name())
+                .requestMatchers("/api/v1/auth/users", "/api/v1/auth/tours/{tourId}/comments/delete", "/api/v1/auth/statistics").hasAuthority(Role.ADMIN.name())
                 .requestMatchers(HttpMethod.POST,  "/api/v1/auth/tours/add", "/api/v1/auth/tours/update", "/api/v1/auth/users/update", "/api/v1/auth/users/add").hasAuthority(Role.ADMIN.name())
                 .requestMatchers(HttpMethod.GET, "/api/v1/auth/users","/api/v1/auth/user/find", "/api/v1/auth/reservations", "/api/v1/auth/persons/reservation" ).hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/reservations/create", "/api/v1/auth/tours/{tourId}/comments/add" ).hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
-                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours/**", "/api/v1/auth/tours/{tourId}/comments").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/auth/tours/**", "/api/v1/auth/tours/{tourId}/comments",
+                        "/api/v1/auth/images/**", "/api/v1/auth/statistics/topReservedTours",
+                        "/api/v1/auth/tours/by-departure-date").permitAll()
                 .requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate").permitAll()
                 //.requestMatchers(HttpMethod.GET, "/api/v1/auth/tours","/api/v1/auth/users" ).permitAll()
                 .anyRequest().authenticated()

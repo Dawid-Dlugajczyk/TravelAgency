@@ -23,6 +23,10 @@ public class Tour implements Serializable {
     @Column(name = "tour_id", nullable=false, updatable = false)
     Long id;
 
+    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Reservation> reservations;
+
     @Column(name = "trip_name")
     String name;
 
@@ -58,9 +62,8 @@ public class Tour implements Serializable {
     @Enumerated(EnumType.STRING)
     TourType type;
 
-    @Column(length = 20971520)
-    @Lob
-    byte[] image;
+    @Column(name = "image_path")
+    private String imagePath; // New field to store the image path
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

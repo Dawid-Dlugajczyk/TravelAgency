@@ -7,6 +7,7 @@ import com.finalproject.travelagency.model.MealType;
 import com.finalproject.travelagency.model.Tour;
 import com.finalproject.travelagency.model.TourType;
 import com.finalproject.travelagency.service.TourService;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -98,11 +99,22 @@ public class TourController {
                                                   @RequestParam(required = false) String name,
                                                   @RequestParam(required = false) Double minPrice,
                                                   @RequestParam(required = false) Double maxPrice,
-                                                  @RequestParam(required = false) Integer minNumberOfDays,
+                                                  @RequestParam(required = false) Integer minNumOfDays,
                                                   @RequestParam(required = false) Integer maxNumOfDays) {
         List<Tour> filteredTours = tourService.filterTours(
-                countries, cities, departureDate, meals, hotelName, arrivalDate, types, name, minPrice, maxPrice, minNumberOfDays, maxNumOfDays);
+                countries, cities, departureDate, meals, hotelName, arrivalDate, types, name, minPrice, maxPrice, minNumOfDays, maxNumOfDays);
         return new ResponseEntity<>(filteredTours, HttpStatus.OK);
+    }
+
+    @GetMapping("/by-departure-date")
+    public ResponseEntity<List<Tour>> getToursByDepartureDate() {
+        List<Tour> tours = tourService.getToursBeforeOrOnCurrentDate();
+
+        if (tours.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(tours, HttpStatus.OK);
     }
 
     @GetMapping("/enums/types")
