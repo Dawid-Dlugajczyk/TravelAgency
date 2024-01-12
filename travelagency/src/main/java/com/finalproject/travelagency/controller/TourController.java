@@ -7,22 +7,17 @@ import com.finalproject.travelagency.model.MealType;
 import com.finalproject.travelagency.model.Tour;
 import com.finalproject.travelagency.model.TourType;
 import com.finalproject.travelagency.service.TourService;
-import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.metadata.GenericCallMetaDataProvider;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/auth/tours")
@@ -118,14 +113,14 @@ public class TourController {
     }
 
     @GetMapping("/enums/types")
-    public ResponseEntity<List<TourType>> getMealTypes() {
+    public ResponseEntity<List<TourType>> getTourTypes() {
         List<TourType> meals = tourService.getTourTypes();
         return ResponseEntity.ok(meals);
     }
 
     @GetMapping("/enums/meals")
-    public ResponseEntity<List<String>> getTourTypes() {
-        List<String> types = tourService.getMealTypes();
+    public ResponseEntity<List<MealType>> getMealTypes() {
+        List<MealType> types = tourService.getMealTypes();
         return ResponseEntity.ok(types);
     }
 
@@ -141,5 +136,10 @@ public class TourController {
         return ResponseEntity.ok(cities);
     }
 
+    @PutMapping("/places/{tourId}")
+    public ResponseEntity<Tour> updateTourPlaces(@PathVariable Long tourId, @RequestParam Integer number){
+        Tour tour = tourService.updateTourPlaces(tourId, number);
+        return new ResponseEntity<>(tour, HttpStatus.OK);
+    }
 
 }

@@ -6,17 +6,14 @@ import com.finalproject.travelagency.model.*;
 import com.finalproject.travelagency.repository.CommentRepository;
 import com.finalproject.travelagency.repository.TourRepository;
 import com.finalproject.travelagency.repository.UserRepository;
-import jakarta.websocket.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Blob;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class TourService {
 
-    private static final String IMAGE_DIRECTORY = "C:/Users/david/Desktop/Ostatni projekt/FInalProject/TravelAgency/images/";
+    private static final String IMAGE_DIRECTORY = "./images/";
     private final TourRepository tourRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
@@ -46,6 +43,7 @@ public class TourService {
 
     public Tour addTour(Tour tour, MultipartFile imageFile) throws IOException {
         try {
+            tour.setId(0L);
             String imagePath = saveImageLocally(imageFile);
             tour.setImagePath(imagePath);
             return tourRepository.save(tour);
@@ -123,10 +121,8 @@ public class TourService {
                 types, name, minPrice, maxPrice, minNumberOfDays, maxNumOfDays);
     }
 
-    public List<String> getMealTypes() {
-        return Arrays.stream(MealType.values())
-                .map(Enum::name) // Convert enum to string
-                .collect(Collectors.toList());
+    public List<MealType> getMealTypes() {
+        return Arrays.asList(MealType.values());
     }
 
 
@@ -175,5 +171,11 @@ public class TourService {
         LocalDate currentDate = LocalDate.now();
         LocalDate oneMonthLater = currentDate.plusMonths(1);
         return tourRepository.findByDepartureDateLessThanEqual(oneMonthLater);
+    }
+    public Tour updateTourPlaces(Long id, Integer number){
+        Tour tour = tourRepository.findTourById(id)
+                .orElseThrow(() -> new NoSuchElementException("Reservation not found"));
+        tour.setAvailablePlaces(tour.getAvailablePlaces());
+        return tourRepository.save(tour);
     }
 }

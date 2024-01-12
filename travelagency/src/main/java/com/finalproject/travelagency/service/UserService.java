@@ -2,6 +2,7 @@ package com.finalproject.travelagency.service;
 
 
 
+import com.finalproject.travelagency.auth.AuthenticationService;
 import com.finalproject.travelagency.exception.UserNotFoundException;
 import com.finalproject.travelagency.model.User;
 import com.finalproject.travelagency.repository.UserRepository;
@@ -15,12 +16,15 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AuthenticationService authenticationService;
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
+        this.authenticationService = authenticationService;
     }
 
     public User addUser(User user){
+        user.setPassword(authenticationService.encodePassword(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -41,7 +45,10 @@ public class UserService {
         newUser.setDateOfBirth(user.getDateOfBirth());
         newUser.setPesel(user.getPesel());
         newUser.setPhoneNumber(user.getPhoneNumber());
-        newUser.setPassword(newUser.getPassword());
+        if(user.getPassword() != null){
+            newUser.setPassword(authenticationService.encodePassword(user.getPassword()));
+        }
+
         return userRepository.save(newUser);
     }
 

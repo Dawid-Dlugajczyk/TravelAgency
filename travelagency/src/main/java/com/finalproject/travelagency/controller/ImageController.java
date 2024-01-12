@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 @CrossOrigin(origins = "http://localhost:4200")
 public class ImageController {
 
-    private static final String IMAGE_DIRECTORY = "C:/Users/david/Desktop/Ostatni projekt/FInalProject/TravelAgency/images/";
+    private static final String IMAGE_DIRECTORY = "./images/";
 
     @GetMapping("/{imageName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {

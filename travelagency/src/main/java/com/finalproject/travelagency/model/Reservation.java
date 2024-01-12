@@ -28,9 +28,8 @@ public class Reservation {
     private User user;
 
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "reservation_id")
-    @JsonIgnore
     private List<Person> persons;
 
     @ManyToOne

@@ -19,8 +19,8 @@ import java.util.List;
 @Table(name = "tours")
 public class Tour implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "tour_id", nullable=false, updatable = false)
+    @GeneratedValue
+    @Column(name = "tour_id")
     Long id;
 
     @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
@@ -63,7 +63,7 @@ public class Tour implements Serializable {
     TourType type;
 
     @Column(name = "image_path")
-    private String imagePath; // New field to store the image path
+    private String imagePath;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
